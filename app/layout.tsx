@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Layout from "@/app/layout/components/layout";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import React from "react";
+import StoreProvider from "@/app/providers/store-provider";
+import { AuthInitializer } from "@/app/core/Initializer/AuthInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,9 +30,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      dir="rtl"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="h-full flex flex-col !bg-[#F6F6F6]">
+        <AppRouterCacheProvider>
+          <StoreProvider>
+            <AuthInitializer>
+              <Layout>{children}</Layout>
+            </AuthInitializer>
+          </StoreProvider>
+        </AppRouterCacheProvider>
+      </body>
     </html>
   );
 }

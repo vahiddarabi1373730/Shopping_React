@@ -1,26 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    --gray-25: #FFFFFF;
+    --gray-50: #FAFBFA;
+    --gray-100: #F6F6F6;
+    --gray-200: #E9ECEF;
+    --gray-300: #D4D4D4;
+    --gray-400: #B1B3B2;
+    --gray-500: #979797;
+    --gray-600: #7C7C7C;
+    --gray-700: #4C4E4B;
+    --gray-800: #3D3F3C;
+    --gray-900: #2C2C2C;
+
+    --brown-50: #F6F7F4;
+    --brown-500: #8D5B2E;
+    --brown-600: #9B4415;
+    --brown-700: #4E2E1D;
+    --brown-800: #4E2F1E;
+    --brown-900: #2F1C11;
+
+    --green-50: #E0E4DA;
+    --green-100: #C9D0BC;
+    --green-500: #8DC63F;
+    --green-600: #84BD00;
+    --green-700: #76C000;
+
+    --red-500: #CC3931;
+
+    --slate-500: #808C9E;
+    --slate-600: #717570;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.btn-md{
+    width: 100px;
 }
