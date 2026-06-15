@@ -1,19 +1,35 @@
 ﻿import { coreApi } from "@/app/core/RTK_Query/core-api";
-import { Category, CreateCategoryRequest } from "@/app/api/models/Category";
+import { Category, CategoryArg } from "@/app/api/models/Category";
 import { BaseResponse } from "@/app/api/models/base-response";
 
 export const enhanceCategoryApi = coreApi.enhanceEndpoints({
-  addTagTypes: ["category"],
+  addTagTypes: ["category", "table"],
 });
 
 export const categoryApi = enhanceCategoryApi.injectEndpoints({
   endpoints: (build) => ({
-    loadCategories: build.mutation<boolean, CreateCategoryRequest>({
+    createCategories: build.mutation<boolean, CategoryArg>({
       query: (body) => ({
         url: "ProductCategory/Create",
         method: "POST",
-        data: body,
+        data: body.request,
       }),
+      invalidatesTags: ["table"],
+    }),
+    editCategory: build.mutation<boolean, CategoryArg>({
+      query: (arg) => ({
+        url: `ProductCategory/Edit/${arg.id}`,
+        method: "PUT",
+        data: arg.request,
+      }),
+      invalidatesTags: ["table"],
+    }),
+    deleteCategory: build.mutation<boolean, string>({
+      query: (id) => ({
+        url: `ProductCategory/Delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["table"],
     }),
     loadCategory: build.query<BaseResponse<Category>, { id: string }>({
       query: ({ id }) => ({
@@ -24,4 +40,9 @@ export const categoryApi = enhanceCategoryApi.injectEndpoints({
   }),
 });
 
-export const { useLoadCategoriesMutation, useLoadCategoryQuery } = categoryApi;
+export const {
+  useCreateCategoriesMutation,
+  useLoadCategoryQuery,
+  useEditCategoryMutation,
+  useDeleteCategoryMutation,
+} = categoryApi;

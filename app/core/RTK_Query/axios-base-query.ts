@@ -21,7 +21,6 @@ export const axiosBaseQuery =
       });
       return { data: result.data };
     } catch (axiosError: any) {
-      console.log(axiosError);
       return {
         error: HandleError(axiosError.response?.status, axiosError),
       };
@@ -34,6 +33,11 @@ export function HandleError(status: number, axiosError: any): ErrorResponse {
       return {
         message: "آدرس یافت نشد",
         status: 404,
+      };
+    case 500:
+      return {
+        message: axiosError.response?.data.message,
+        status: axiosError.response?.data.isSuccess,
       };
     default:
       return {

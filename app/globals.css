@@ -1,4 +1,14 @@
-@import "tailwindcss";
+/*@import "tailwindcss";*/
+
+/*@layer base {*/
+/*    :where(.ant-input) {*/
+/*        !* استایل‌های پایه *!*/
+/*    }*/
+/*}*/
+
+@import "tailwindcss/preflight";
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
 
 :root {
     --gray-25: #FFFFFF;
@@ -28,6 +38,7 @@
 
     --red-500: #CC3931;
 
+    --bg-header-table:#C1CFEF;
     --slate-500: #808C9E;
     --slate-600: #717570;
 }

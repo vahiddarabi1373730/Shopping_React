@@ -3,4 +3,6 @@
   lastName: string;
   address: string;
   email: string;
+  password: string;
+  id?: number;
 }

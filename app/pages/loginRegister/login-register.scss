@@ -1,0 +1,24 @@
+﻿.container-login-register{
+  position: relative;
+  height: 100vh;  
+  background-image: url('/images/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  
+  & span.selected{
+    background-color: var(--gray-25);
+    color: var(--brown-800);
+    border-radius: 8px;
+  }
+  & .opacity-cover{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #2C2C2C;
+    opacity: .3;
+    z-index: 2;
+  }
+}

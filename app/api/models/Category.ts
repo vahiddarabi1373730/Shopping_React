@@ -8,7 +8,10 @@
   lastUpdateDate: string; // یا
 }
 
-export interface CreateCategoryRequest {
-  title: string;
-  urlTitle: string;
+export interface CategoryArg {
+  request: {
+    title: string;
+    urlTitle: string;
+  };
+  id?: string;
 }

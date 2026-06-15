@@ -7,14 +7,6 @@ export const enhanceApi = coreApi.enhanceEndpoints({
 });
 export const authApi = enhanceApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<BaseResponse<LoginResponse>, LoginRequest>({
-      query: (body) => ({
-        url: "Account/Login/login",
-        method: "POST",
-        data: body,
-      }),
-      invalidatesTags: ["auth"],
-    }),
     register: builder.mutation({
       query: (data) => ({ url: "register", method: "POST", data }),
       invalidatesTags: ["auth"],
@@ -34,9 +26,5 @@ export const authApi = enhanceApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const {
-  useLoginMutation,
-  useRegisterMutation,
-  useUsersQuery,
-  useCategoriesQuery,
-} = authApi;
+export const { useRegisterMutation, useUsersQuery, useCategoriesQuery } =
+  authApi;

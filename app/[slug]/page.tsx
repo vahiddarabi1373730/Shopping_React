@@ -2,7 +2,8 @@
 import Products from "@/app/pages/products";
 import Categories from "@/app/pages/categories/page";
 import { UserList } from "@/app/pages/users/page";
-import LoginPage from "@/app/pages/login/page";
+import LoginRegister from "@/app/pages/loginRegister/login-register";
+import { Card } from "antd";
 
 const ProductContent = () => <Products />;
 const CategoryContent = () => <Categories />;
@@ -22,10 +23,6 @@ const Page_Components: Record<
     title: "لیست کاربران",
     component: <UserList />,
   },
-  login: {
-    title: "ورود",
-    component: <LoginPage />,
-  },
 };
 export default async function DynamicPage({
   params,
@@ -37,10 +34,12 @@ export default async function DynamicPage({
 
   return (
     <div className="flex flex-col gap-2 h-full">
-      <h1 className="text-2xl font-bold">{pageData?.title}</h1>
-      <div className="bg-white p-4 rounded-xl shadow-sm flex-1">
-        {pageData.component}
-      </div>
+      <Card
+        className="h-full flex flex-col"
+        title={<span className="text-2xl font-bold">{pageData?.title}</span>}
+      >
+        {pageData?.component}
+      </Card>
     </div>
   );
 }

@@ -53,17 +53,19 @@ export default function CustomMenu() {
       key: "2",
       label: "دسته‌بندی",
       icon: <TbCategory size={24} />,
-      children: [
-        { key: "2-1", label: "ورزشی", icon: <GoDotFill />, path: "categories" },
-      ],
+      path: "categories",
     },
   ];
 
   const onClick: MenuProps["onClick"] = (e) => {
     items.forEach((item) => {
-      const child = item.children.find((ch) => ch.key === e.key);
-      if (child) {
-        router.push(child.path);
+      if (item.children) {
+        const child = item.children.find((ch) => ch.key === e.key);
+        if (child) {
+          router.push(child.path);
+        }
+      } else {
+        router.push(item.path);
       }
     });
   };

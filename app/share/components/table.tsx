@@ -1,7 +1,6 @@
 ﻿import { ColumnType } from "@rc-component/table";
 import { Table } from "antd";
 import { TableRequestInterface, useTableQuery } from "@/app/api/services/table";
-import { useState } from "react";
 
 export interface CustomTableProps<T> {
   columns: ColumnType<T>[];
@@ -25,7 +24,11 @@ export const CustomTable = <T extends object>({
       columns={columns}
       dataSource={data.data}
       loading={isLoading}
-      className="[&_thead_.ant-table-cell]:!text-[var(--green-500)] [&_thead_.ant-table-cell]:!bg-[var(--green-50)]"
+      className="
+      [&_thead_.ant-table-cell]:!text-[var(--green-500)]
+      [&_thead_.ant-table-cell]:!bg-[var(--bg-header-table)]
+      [&_thead_.ant-table-cell]:!p-2
+      "
     />
   );
 };
