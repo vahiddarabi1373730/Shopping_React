@@ -21,28 +21,39 @@ export const axiosBaseQuery =
       });
       return { data: result.data };
     } catch (axiosError: any) {
+      const status = axiosError.response?.status;
+      const handled = HandleError(status, axiosError);
       return {
-        error: HandleError(axiosError.response?.status, axiosError),
+        error: {
+          status: handled.status,
+          message: handled.message,
+        },
       };
     }
   };
 
 export function HandleError(status: number, axiosError: any): ErrorResponse {
+  const serverData = axiosError.response?.data;
+  let errorMessage = "خطای ناشناخته";
+
+  if (serverData?.errors) {
+    const errorValues = Object.values(serverData.errors);
+    if (errorValues.length > 0 && Array.isArray(errorValues[0])) {
+      errorMessage = errorValues[0][0];
+    }
+  } else if (serverData?.message) {
+    errorMessage = serverData.message;
+  } else {
+    errorMessage = axiosError.message || "خطای ارتباط با سرور";
+  }
   switch (status) {
+    case 400:
+      return { message: errorMessage, status: 400 };
     case 404:
-      return {
-        message: "آدرس یافت نشد",
-        status: 404,
-      };
+      return { message: "سرویس مورد نظر یافت نشد", status: 404 };
     case 500:
-      return {
-        message: axiosError.response?.data.message,
-        status: axiosError.response?.data.isSuccess,
-      };
+      return { message: serverData?.message || "خطای داخلی سرور", status: 500 };
     default:
-      return {
-        message: axiosError.response?.data ?? axiosError.message,
-        status: status,
-      };
+      return { message: errorMessage, status: status || 500 };
   }
 }

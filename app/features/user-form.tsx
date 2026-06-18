@@ -6,10 +6,12 @@ import {
   useEditUserMutation,
 } from "@/app/api/services/user";
 import { UserInterface } from "@/app/api/models/User";
+
 export interface UserFormFooterProps {
   onCancel: () => void;
   onSubmit: () => void;
   loading: boolean;
+  isValid: boolean;
 }
 
 export interface UserFormProps {
@@ -18,6 +20,7 @@ export interface UserFormProps {
   isEdit: boolean;
   user: UserInterface | null;
   closeModal: () => void;
+  handIsValidForm: (isValid: boolean) => void;
 }
 export default function UserForm({
   counter,
@@ -25,15 +28,25 @@ export default function UserForm({
   isEdit,
   user,
   closeModal,
+  handIsValidForm,
 }: UserFormProps) {
-  const { control, getValues, reset } = useForm<UserInterface>();
+  const {
+    control,
+    getValues,
+    reset,
+    watch,
+    formState: { isValid, errors },
+  } = useForm<UserInterface>({ mode: "onChange" });
   const [callerAdd, { isError, isLoading, data }] = useAddUserMutation();
 
   const [callerEdit, responseRtk] = useEditUserMutation();
 
   useEffect(() => {
+    handIsValidForm(isValid);
+    console.log(errors);
+  }, [watch()]);
+  useEffect(() => {
     if (counter === 0) return;
-    console.log(counter);
     handleLoading(true);
     const submit = async () => {
       const request: UserInterface = {
@@ -67,9 +80,25 @@ export default function UserForm({
           <span className="text-sm font-medium text-(--gray-700)">نام</span>
           <Controller
             control={control}
-            render={({ field: { value, onChange } }) => (
-              <Input onChange={onChange} value={value} />
+            render={({
+              field: { value, onChange, onBlur },
+              fieldState: { error, isDirty, isTouched },
+            }) => (
+              <>
+                <Input onChange={onChange} value={value} onBlur={onBlur} />
+                {error && isDirty && isTouched && (
+                  <span className="!text-xs font-medium text-(--red-500) !text-xs">
+                    {error.message}
+                  </span>
+                )}
+              </>
             )}
+            rules={{
+              required: {
+                value: true,
+                message: "این فیلد الزامی است.",
+              },
+            }}
             defaultValue={isEdit ? user?.firstName : undefined}
             name="firstName"
           />
@@ -83,6 +112,9 @@ export default function UserForm({
             render={({ field: { value, onChange } }) => (
               <Input onChange={onChange} value={value} />
             )}
+            rules={{
+              required: true,
+            }}
             name="lastName"
             defaultValue={isEdit ? user?.lastName : undefined}
           />
@@ -93,6 +125,9 @@ export default function UserForm({
               رمز عبور
             </span>
             <Controller
+              rules={{
+                required: true,
+              }}
               control={control}
               render={({ field: { value, onChange } }) => (
                 <Input onChange={onChange} value={value} />
@@ -106,11 +141,28 @@ export default function UserForm({
           <span className="text-sm font-medium text-(--gray-700)">ایمیل</span>
           <Controller
             control={control}
-            render={({ field: { value, onChange } }) => (
-              <Input onChange={onChange} value={value} />
+            render={({
+              field: { value, onChange, onBlur },
+              fieldState: { error, isDirty, isTouched },
+            }) => (
+              <>
+                <Input onChange={onChange} value={value} onBlur={onBlur} />
+                {error && isDirty && isTouched && (
+                  <span className="!text-xs font-medium text-(--red-500)">
+                    {error.message}
+                  </span>
+                )}
+              </>
             )}
             name="email"
             defaultValue={isEdit ? user?.email : undefined}
+            rules={{
+              required: "این فیلد الزامی است.",
+              validate: (value) => {
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regex.test(value) || "ایمیل معتبر نیست";
+              },
+            }}
           />
         </div>
 
@@ -118,11 +170,24 @@ export default function UserForm({
           <span className="text-sm font-medium text-(--gray-700)">آدرس</span>
           <Controller
             control={control}
-            render={({ field: { value, onChange } }) => (
-              <Input onChange={onChange} value={value} />
+            render={({
+              field: { value, onChange },
+              fieldState: { error, isDirty, isTouched },
+            }) => (
+              <>
+                <Input onChange={onChange} value={value} />
+                {error && isDirty && isTouched && (
+                  <span className="!text-xs font-medium text-(--red-500)">
+                    {error.message}
+                  </span>
+                )}
+              </>
             )}
             name="address"
             defaultValue={isEdit ? user?.address : undefined}
+            rules={{
+              required: true,
+            }}
           />
         </div>
       </form>
@@ -134,6 +199,7 @@ export function UserFormFooter({
   onCancel,
   onSubmit,
   loading,
+  isValid,
 }: UserFormFooterProps) {
   return (
     <div className="flex justify-end gap-2">
@@ -142,6 +208,7 @@ export function UserFormFooter({
         type="primary"
         loading={loading}
         onClick={onSubmit}
+        disabled={!isValid}
       >
         ثبت کاربر
       </Button>

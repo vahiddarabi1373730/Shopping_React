@@ -3,25 +3,28 @@ import { CustomTable } from "@/app/share/components/table";
 import React, { useState } from "react";
 import { ColumnType } from "@rc-component/table";
 import { UserInterface } from "@/app/api/models/User";
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 import UserForm, { UserFormFooter } from "@/app/features/user-form";
-import { IoMdAddCircle } from "react-icons/io";
 import { BiEdit } from "react-icons/bi";
 
 export function UserList() {
   const [submitCounter, setSubmitCounter] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isValid, setIsValid] = React.useState(false);
   const [isEditMode, setIsEditMode] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState<UserInterface | null>(
     null,
   );
-  const addUser = () => {
+  const openModal = () => {
     setIsOpen(true);
   };
 
   const handleLoading = (loading: boolean) => {
     setLoading(loading);
+  };
+  const handIsValidForm = (isValid: boolean) => {
+    setIsValid(isValid);
   };
 
   const closeModal = () => {
@@ -78,7 +81,14 @@ export function UserList() {
   return (
     <div className="flex flex-col gap-2">
       <Modal
-        title="Basic Modal"
+        title={
+          <div className={"flex flex-col gap-2"}>
+            <span className={"text-xl font-bold text-[var(--gray-800)]"}>
+              افزودن کاربر
+            </span>
+            <hr className={"text-[var(--gray-400)]"} />
+          </div>
+        }
         closable={{ "aria-label": "Custom Close Button" }}
         open={isOpen}
         onCancel={closeModal}
@@ -88,6 +98,7 @@ export function UserList() {
             onCancel={closeModal}
             onSubmit={onSubmit}
             loading={loading}
+            isValid={isValid}
           />
         }
       >
@@ -97,21 +108,16 @@ export function UserList() {
           isEdit={isEditMode}
           user={selectedUser}
           closeModal={closeModal}
+          handIsValidForm={handIsValidForm}
         />
       </Modal>
 
-      <div className="flex justify-end">
-        <Button
-          className="btn-md"
-          type="primary"
-          onClick={addUser}
-          icon={<IoMdAddCircle />}
-        >
-          افزودن کاربر
-        </Button>
-      </div>
       <div className="flex flex-col">
-        <CustomTable url="User/GetAll" columns={columns} />
+        <CustomTable
+          url="User/GetAll"
+          columns={columns}
+          openModal={openModal}
+        />
       </div>
     </div>
   );

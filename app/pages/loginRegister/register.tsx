@@ -19,8 +19,15 @@ export interface RegisterInterface {
 }
 export default function Register({ handleLogin }: RegisterProps) {
   const router = useRouter();
-  const { register, control, setError, handleSubmit, getValues, reset } =
-    useForm<RegisterInterface>();
+  const {
+    register,
+    control,
+    setError,
+    handleSubmit,
+    getValues,
+    reset,
+    formState: { isValid },
+  } = useForm<RegisterInterface>();
   const [caller, { isError, isLoading, data, isSuccess }] =
     useRegisterMutation();
   const [customError, setCustomError] = useState<ErrorResponse | null>(null);
@@ -131,6 +138,11 @@ export default function Register({ handleLogin }: RegisterProps) {
           <Controller
             control={control}
             name="confirmPassword"
+            rules={{
+              validate: (value) => {
+                return getValues().password === value;
+              },
+            }}
             render={({ field: { onChange, value } }) => {
               return (
                 <Input
@@ -148,6 +160,9 @@ export default function Register({ handleLogin }: RegisterProps) {
           <Controller
             control={control}
             name="address"
+            rules={{
+              required: true,
+            }}
             render={({ field: { onChange, value } }) => {
               return (
                 <Input
@@ -166,6 +181,7 @@ export default function Register({ handleLogin }: RegisterProps) {
           onClick={onSubmit}
           icon={<IoIosAddCircle size="16" />}
           loading={isLoading}
+          disabled={!isValid}
         >
           <span className="text-base font-semibold">ثبت نام</span>
         </Button>

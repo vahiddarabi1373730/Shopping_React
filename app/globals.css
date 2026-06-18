@@ -1,14 +1,12 @@
-/*@import "tailwindcss";*/
+@import "tailwindcss";
 
-/*@layer base {*/
-/*    :where(.ant-input) {*/
-/*        !* استایل‌های پایه *!*/
-/*    }*/
-/*}*/
+@layer base {
+    :where(.ant-input) {
+        /* استایل‌های پایه */
+    }
+}
 
-@import "tailwindcss/preflight";
-@import "tailwindcss/theme";
-@import "tailwindcss/utilities";
+
 
 :root {
     --gray-25: #FFFFFF;

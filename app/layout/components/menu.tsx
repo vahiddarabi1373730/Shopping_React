@@ -28,13 +28,13 @@ export default function CustomMenu() {
       icon: <FaRegUserCircle />,
       children: [
         {
-          key: "0-1",
+          key: "users",
           label: "کاربران",
           icon: <ImUsers />,
           path: "users",
         },
         {
-          key: "0-2",
+          key: "addUser",
           label: "افزودن کاربر",
           icon: <GoDotFill />,
           path: "add-user",
@@ -46,11 +46,16 @@ export default function CustomMenu() {
       label: "محصولات",
       icon: <MdProductionQuantityLimits size={24} />,
       children: [
-        { key: "1-1", label: "موبایل", icon: <GoDotFill />, path: "products" },
+        {
+          key: "products",
+          label: "موبایل",
+          icon: <GoDotFill />,
+          path: "products",
+        },
       ],
     },
     {
-      key: "2",
+      key: "categories",
       label: "دسته‌بندی",
       icon: <TbCategory size={24} />,
       path: "categories",
@@ -58,16 +63,7 @@ export default function CustomMenu() {
   ];
 
   const onClick: MenuProps["onClick"] = (e) => {
-    items.forEach((item) => {
-      if (item.children) {
-        const child = item.children.find((ch) => ch.key === e.key);
-        if (child) {
-          router.push(child.path);
-        }
-      } else {
-        router.push(item.path);
-      }
-    });
+    router.push(e.key);
   };
 
   return (
