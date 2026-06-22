@@ -5,7 +5,7 @@
   id: string;
   isDelete: boolean;
   createDate: string;
-  lastUpdateDate: string; // یا
+  lastUpdateDate: string;
 }
 
 export interface CategoryArg {

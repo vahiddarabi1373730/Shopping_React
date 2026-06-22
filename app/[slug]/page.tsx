@@ -1,9 +1,10 @@
 ﻿import React from "react";
-import Products from "@/app/pages/products";
 import Categories from "@/app/pages/categories/page";
 import { UserList } from "@/app/pages/users/page";
-import LoginRegister from "@/app/pages/loginRegister/login-register";
 import { Card } from "antd";
+import Products from "@/app/pages/products/page";
+import OrdersList from "@/app/pages/orders/page";
+import BasketList from "@/app/pages/baskets/page";
 
 const ProductContent = () => <Products />;
 const CategoryContent = () => <Categories />;
@@ -22,6 +23,14 @@ const Page_Components: Record<
   users: {
     title: "لیست کاربران",
     component: <UserList />,
+  },
+  orders: {
+    title: "فروش",
+    component: <OrdersList />,
+  },
+  baskets: {
+    title: "سبد خرید",
+    component: <BasketList />,
   },
 };
 export default async function DynamicPage({

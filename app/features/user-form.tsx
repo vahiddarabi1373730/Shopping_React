@@ -43,7 +43,6 @@ export default function UserForm({
 
   useEffect(() => {
     handIsValidForm(isValid);
-    console.log(errors);
   }, [watch()]);
   useEffect(() => {
     if (counter === 0) return;

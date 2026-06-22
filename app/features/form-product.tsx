@@ -1,7 +1,6 @@
 ﻿"use client";
-import { Button, Input, Radio, Upload } from "antd";
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
+import { Button, Input, Radio } from "antd";
+import "../scss/form-product.scss";
 import { IoIosAddCircle } from "react-icons/io";
 import React, {
   forwardRef,
@@ -13,18 +12,22 @@ import { Controller, useForm } from "react-hook-form";
 import { MdCancel } from "react-icons/md";
 import { Product, ProductArgRequest } from "@/app/api/models/product";
 import {
+  handelRefetch,
   useCreateProductMutation,
   useEditProductMutation,
 } from "@/app/api/services/product";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import DatePicker from "react-multi-date-picker";
-import Icon from "react-multi-date-picker/components/icon";
+import { miladiToShamsi } from "@/app/share/helpers/miladi-to-shamsi";
+import DatePickerWrapper from "@/app/share/components/date-picker-wrapper";
+import UploaderWrapper from "@/app/share/components/uploder-wrapper";
+import moment from "moment-jalaali";
+import { BASE_URL_Root } from "@/app/api/config";
 
 export interface FooterProductProps {
   onSubmit: () => void;
   onCancel: () => void;
   loading: boolean;
   isValid: boolean;
+  isEdit: boolean;
 }
 
 export interface FormProductProps {
@@ -53,7 +56,6 @@ export const FormProduct = forwardRef(
       watch,
       formState: { isValid, errors },
     } = useForm<ProductArgRequest>();
-    const createDate = watch("createDate");
 
     const [customError, setCustomError] = useState<any>(null);
     const [caller, { isLoading }] = useCreateProductMutation();
@@ -69,13 +71,12 @@ export const FormProduct = forwardRef(
       formData.append("price", values.price.toString());
       formData.append("isExists", String(values.isExists));
       formData.append("isSpecial", String(values.isSpecial));
-      formData.append("createDate", values.createDate?.toDate()?.toISOString());
-      if (values.imageFile && values.imageFile.file) {
-        const actualFile =
-          values.imageFile.file.originFileObj || values.imageFile.file;
-        formData.append("imageFile", actualFile);
-      } else if (values.imageFile instanceof File) {
-        formData.append("imageFile", values.imageFile);
+      const backendDate = moment(values.createDate, "jYYYY-jMM-jDD").format(
+        "YYYY-MM-DD HH:mm:ss.SSS",
+      );
+      formData.append("createDate", backendDate);
+      if (values.imageFile[0].originFileObj) {
+        formData.append("imageFile", values.imageFile[0].originFileObj);
       }
 
       onLoadingChange(true);
@@ -90,6 +91,7 @@ export const FormProduct = forwardRef(
         } else {
           await caller(formData).unwrap();
         }
+        handelRefetch(true);
         closeModal();
         onLoadingChange(isEdit ? editRTK.isLoading : isLoading);
       } catch (err) {
@@ -108,7 +110,6 @@ export const FormProduct = forwardRef(
 
     return (
       <div>
-        {JSON.stringify(customError)}
         {customError && (
           <span className="block mb-2 border border-solid border-red-200 p-2 rounded-md text-sm font-medium text-[var(--red-500)]">
             {customError.message}
@@ -141,6 +142,9 @@ export const FormProduct = forwardRef(
                   قیمت
                 </span>
                 <Controller
+                  rules={{
+                    required: { value: true, message: "این فیلد الزامی است" },
+                  }}
                   control={control}
                   render={({ field: { onChange, value } }) => {
                     return (
@@ -158,6 +162,9 @@ export const FormProduct = forwardRef(
                   توضیحات کوتاه
                 </span>
                 <Controller
+                  rules={{
+                    required: { value: true, message: "این فیلد الزامی است" },
+                  }}
                   control={control}
                   render={({ field: { onChange, value } }) => {
                     return <Input value={value} onChange={onChange} />;
@@ -171,6 +178,9 @@ export const FormProduct = forwardRef(
                   توضیحات
                 </span>
                 <Controller
+                  rules={{
+                    required: { value: true, message: "این فیلد الزامی است" },
+                  }}
                   control={control}
                   render={({ field: { onChange, value } }) => {
                     return <Input value={value} onChange={onChange} />;
@@ -182,6 +192,12 @@ export const FormProduct = forwardRef(
             </div>
             <div className="flex gap-4">
               <Controller
+                rules={{
+                  required: {
+                    value: getValues().isSpecial,
+                    message: "این فیلد الزامی است",
+                  },
+                }}
                 control={control}
                 render={({ field: { onChange, value } }) => {
                   return (
@@ -200,6 +216,12 @@ export const FormProduct = forwardRef(
                 name={"isSpecial"}
               />
               <Controller
+                rules={{
+                  required: {
+                    value: getValues().isExists,
+                    message: "این فیلد الزامی است",
+                  },
+                }}
                 control={control}
                 render={({ field: { onChange, value } }) => {
                   return (
@@ -220,22 +242,31 @@ export const FormProduct = forwardRef(
             </div>
 
             <Controller
+              rules={{
+                required: { value: true, message: "این فیلد الزامی است" },
+              }}
               control={control}
               render={({ field: { onChange } }) => {
                 return (
-                  <Upload
+                  <UploaderWrapper
                     onChange={onChange}
-                    className="flex flex-1"
-                    beforeUpload={() => false}
-                  >
-                    <Button>
-                      انتخاب عکس
-                      <FaCloudUploadAlt />
-                    </Button>
-                  </Upload>
+                    imageName={isEdit ? product!.imageName : ""}
+                    isEdit={isEdit}
+                  ></UploaderWrapper>
                 );
               }}
-              defaultValue={isEdit ? product?.imageName : undefined}
+              defaultValue={
+                isEdit
+                  ? [
+                      {
+                        url: BASE_URL_Root + product!.imageName,
+                        name: product!.imageName.split("_")[1],
+                        uid: "-1",
+                        status: "done",
+                      },
+                    ]
+                  : []
+              }
               name={"imageFile"}
             />
             <div className={"flex flex-col gap-1 w-full"}>
@@ -244,25 +275,26 @@ export const FormProduct = forwardRef(
                   تاریخ ایجاد
                 </span>
                 <Controller
+                  rules={{
+                    required: { value: true, message: "این فیلد الزامی است" },
+                  }}
                   control={control}
                   render={({ field: { onChange, value } }) => {
                     return (
-                      <DatePicker
-                        calendarPosition="bottom-right"
-                        render={<Icon />}
-                        onChange={onChange}
+                      <DatePickerWrapper
                         value={value}
-                        calendar={persian}
-                        locale={persian_fa}
-                        format="YYYY/MM/DD"
-                      />
+                        onChange={onChange}
+                      ></DatePickerWrapper>
                     );
                   }}
+                  defaultValue={
+                    isEdit ? miladiToShamsi(product!.createDate) : undefined
+                  }
                   name={"createDate"}
                 />
               </div>
               <span className="text-sm font-medium text-(--red-500)">
-                {createDate?.toString()}
+                {getValues().createDate}
               </span>
             </div>
           </div>
@@ -277,6 +309,7 @@ export const FooterProduct = ({
   onCancel,
   loading,
   isValid,
+  isEdit,
 }: FooterProductProps) => {
   return (
     <div className="flex justify-end gap-2">
@@ -289,7 +322,9 @@ export const FooterProduct = ({
         loading={loading}
         disabled={!isValid}
       >
-        <span className="text-base font-semibold">تایدد</span>
+        <span className="text-base font-semibold">
+          {isEdit ? "ویرایش" : "ایجاد"}
+        </span>
       </Button>
 
       <Button

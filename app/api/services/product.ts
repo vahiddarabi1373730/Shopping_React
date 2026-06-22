@@ -2,10 +2,18 @@
 import { BaseResponse } from "@/app/api/models/base-response";
 import { Product } from "@/app/api/models/product";
 import { invalidateIfSuccess } from "@/app/share/helpers/handel-invalid-tags";
+import build from "next/dist/build";
+import { useState } from "react";
 
 export const enhanceProductApi = coreApi.enhanceEndpoints({
   addTagTypes: ["product", "table"],
 });
+
+let shouldRefetch = false;
+
+export const handelRefetch = (refetch: boolean) => {
+  shouldRefetch = refetch;
+};
 
 export const productApi = enhanceProductApi.injectEndpoints({
   endpoints: (build) => ({
@@ -33,18 +41,19 @@ export const productApi = enhanceProductApi.injectEndpoints({
       }),
       invalidatesTags: ["table"],
     }),
-    deleteProduct: build.mutation<boolean, string>({
+    deleteProduct: build.mutation<boolean, number>({
       query: (id) => ({
-        url: `Product/Delete/${id}`,
+        url: `Product/DeleteProduct/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["table"],
     }),
     loadProduct: build.query<BaseResponse<Product>, { id: string }>({
       query: ({ id }) => ({
-        url: `Product/GetProductById/products/${id}`,
+        url: `Product/GetProductById/${id}`,
         method: "GET",
       }),
+      forceRefetch: () => shouldRefetch,
     }),
     loadProducts: build.query<BaseResponse<Product[]>, void>({
       query: () => ({

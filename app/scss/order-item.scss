@@ -1,0 +1,21 @@
+﻿.order-item.ant-card{
+  
+    cursor: pointer;
+    height: 150px !important;
+    & .ant-card-cover{
+      height: 65% !important;
+
+      & img{
+        height: 100%;
+      }
+    }
+
+    & .ant-card-body{
+      padding: 16px !important;
+      
+      & .ant-card-meta-title{
+        font-size: 12px;
+      }
+    }
+  
+}

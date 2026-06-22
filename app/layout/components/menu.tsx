@@ -2,11 +2,15 @@
 import { ConfigProvider, Menu, MenuProps } from "antd";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MdProductionQuantityLimits } from "react-icons/md";
+import {
+  MdOutlineReceiptLong,
+  MdProductionQuantityLimits,
+} from "react-icons/md";
 import { TbCategory } from "react-icons/tb";
 import { FaRegUserCircle } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 import { ImUsers } from "react-icons/im";
+import { TfiShoppingCartFull } from "react-icons/tfi";
 
 export interface MenuItemInterface {
   path: string;
@@ -59,6 +63,25 @@ export default function CustomMenu() {
       label: "دسته‌بندی",
       icon: <TbCategory size={24} />,
       path: "categories",
+    },
+    {
+      key: "sales",
+      label: "مدیریت فروش",
+      icon: <MdOutlineReceiptLong size={24} />,
+      children: [
+        {
+          key: "orders",
+          label: "سفارشات",
+          icon: <GoDotFill />,
+          path: "orders",
+        },
+        {
+          key: "baskets",
+          label: "سبد خرید",
+          icon: <GoDotFill />,
+          path: "baskets",
+        },
+      ],
     },
   ];
 

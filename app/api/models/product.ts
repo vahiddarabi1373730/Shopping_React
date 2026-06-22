@@ -7,7 +7,8 @@
   isExists: boolean;
   isSpecial: boolean;
   images: ProductImage[];
-  id: string;
+  id: number;
+  createDate: string;
 }
 
 export interface ProductImage {

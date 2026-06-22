@@ -5,6 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import { ProductImageArg } from "@/app/api/models/product";
 import { LabelValue } from "@/app/api/models/label-value";
 import {
+  handelRefetch,
   useCreateProductGalleryMutation,
   useLoadProductsQuery,
 } from "@/app/api/services/product";
@@ -24,11 +25,9 @@ export default function AddImageToProduct({
     handleSubmit,
     getValues,
     watch,
-    reset,
-    formState: { isValid, errors },
+    formState: { isValid },
   } = useForm<ProductImageArg>();
 
-  const [isEdit, setIsEdit] = useState(false);
   const [caller, rtk] = useCreateProductGalleryMutation();
   const [customError, setCustomError] = useState<any>(null);
 
@@ -40,6 +39,7 @@ export default function AddImageToProduct({
     setCustomError(null);
     try {
       await caller(formData).unwrap();
+      handelRefetch(true);
       onClose();
     } catch (error) {
       setCustomError(error);
@@ -87,13 +87,18 @@ export default function AddImageToProduct({
         )}
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <Controller
+            rules={{
+              required: {
+                value: true,
+                message: "این فیلد الزامی است",
+              },
+            }}
             control={control}
-            render={({ field: { onChange, value } }) => {
+            render={({ field: { onChange } }) => {
               return (
                 <Upload
                   onChange={(info) => {
                     const file = info.fileList[0]?.originFileObj ?? null;
-                    console.log(file);
                     onChange(file);
                   }}
                   maxCount={1}
@@ -115,6 +120,12 @@ export default function AddImageToProduct({
               انتخاب محصول
             </span>
             <Controller
+              rules={{
+                required: {
+                  value: true,
+                  message: "این فیلد الزامی است",
+                },
+              }}
               control={control}
               render={({ field: { onChange, value } }) => {
                 return (

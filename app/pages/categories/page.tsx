@@ -83,7 +83,6 @@ export default function Categories() {
     router.push(`/pages/categories/${id}`);
   };
   const deleteCategory = (id: string) => {
-    console.log(id);
     caller(id).unwrap();
   };
   const EditCategory = (id: string, category: Category) => {
@@ -131,20 +130,10 @@ export default function Categories() {
         />
       </Modal>
 
-      <div className="flex justify-end">
-        <Button
-          onClick={() => openAddCategoryModal()}
-          type="primary"
-          className="btn-md flex items-center justify-center"
-          icon={<IoIosAddCircle size="16" />}
-        >
-          <span className="text-base font-semibold">افزودن</span>
-        </Button>
-      </div>
-
       <CustomTable
         url="ProductCategory/GetAllProductCategory"
         columns={columns}
+        openModal={openAddCategoryModal}
       />
     </div>
   );

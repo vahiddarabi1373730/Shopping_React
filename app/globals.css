@@ -44,3 +44,12 @@
 .btn-md{
     width: 100px;
 }
+
+.btn-lg{
+    width: 150px;
+}
+
+
+.ant-divider{
+    margin: 0 !important;
+}
